@@ -14,13 +14,9 @@ const createProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     if (!title || !price) {
       throw new Error('Missing title or price');
     }
-    const { products, stocks } = await services.createProduct(title, price, description, count);
+    const { id } = await services.createProduct(title, price, description, count);
     const product = {
-      id: products['id'],
-      title: products['title'],
-      price: products['price'],
-      description: products['description'],
-      count: stocks['count'],
+      id,
     }
     return formatJSONResponse({ product });
   } catch (error) {
