@@ -1,6 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 import getProductsById from '@functions/getProductsById';
 import getProductsList from '@functions/getProductsList';
+import createProduct from '@functions/createProduct';
 
 const serverlessConfiguration: AWS = {
   service: 'shop-service',
@@ -17,17 +18,22 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      DATABASE_URL: process.env.DATABASE_URL,
+      DATABASE_USERNAME: process.env.DATABASE_USERNAME,
+      DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
+      DATABASE_DBNAME: process.env.DATABASE_DBNAME,
+      DATABASE_PORT: process.env.DATABASE_PORT,
     },
   },
   // import the function via paths
-  functions: { getProductsById, getProductsList },
+  functions: { getProductsById, getProductsList, createProduct },
   package: { individually: true },
   custom: {
     esbuild: {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: ['aws-sdk'],
+      exclude: ['aws-sdk', 'pg-native'],
       target: 'node14',
       define: { 'require.resolve': undefined },
       platform: 'node',

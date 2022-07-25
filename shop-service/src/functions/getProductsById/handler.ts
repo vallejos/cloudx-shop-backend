@@ -7,6 +7,7 @@ import * as services from './services';
 const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   try {
     const productId = event.pathParameters.productId;
+    console.log('[getProductsById]', { productId });
     if (!productId) {
       throw new Error('Missing productId');
     }
