@@ -1,3 +1,9 @@
+# Task 5
+
+Task 5.1
+- Added import-service
+- Created and configured S3 bucket
+
 # Task 4
 
 Task 4.1 
