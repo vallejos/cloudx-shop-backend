@@ -1,0 +1,6 @@
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"title\": \"Test Product\", \"count\": 100, \"price\": 10, \"description\": \"Test Product\"}"
+}

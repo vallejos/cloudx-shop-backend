@@ -6,6 +6,7 @@ import * as services from './services';
 
 const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   try {
+    console.log('[getProductsList]');
     const products = await services.getProductsList();
     return formatJSONResponse({ products });
   } catch (error) {
