@@ -4,6 +4,10 @@ Task 5.1
 - Added import-service
 - Created and configured S3 bucket
 
+Task 5.2
+- Created importProductsFile lambda function triggered by GET method on `import/` URL.
+- 
+
 # Task 4
 
 Task 4.1 
