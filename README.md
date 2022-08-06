@@ -1,3 +1,18 @@
+# Task 5
+
+Task 5.1
+- Added import-service
+- Created and configured S3 bucket.
+
+Task 5.2
+- Created importProductsFile lambda function triggered by GET method on `import/` URL.
+- Function returns signed URL.
+- Updated FE API.
+
+Task 5.3
+- Created importFileParser lambda function triggered by S3 events fired on the `uploaded` S3 folder.
+- Implemented readable stream to read file content, parse it with `csv-parser`, and log the contents to CloudWatch.
+
 # Task 4
 
 Task 4.1 
