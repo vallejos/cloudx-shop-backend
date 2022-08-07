@@ -2,6 +2,7 @@ import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import { CopyObjectCommand, DeleteObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import csv from 'csv-parser';
+import * as services from './services';
 
 const BUCKET = 'cloudx-task5-import-service-data';
 
@@ -43,7 +44,8 @@ const processS3Data = (s3, s3Data, objKey) => {
           throw error;
         })
         .on('data', (row) => {
-          console.log(`[importFileParser] CSV row: ${JSON.stringify(row)}`);
+          const { name, price, description, count } = row;
+          services.importProduct(name, price, description, count);
         })
         .on('end', async () => {
           console.log(`[importFileParser] Done reading data. Copying...`);
