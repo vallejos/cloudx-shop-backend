@@ -24,6 +24,7 @@ const serverlessConfiguration: AWS = {
       DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
       DATABASE_DBNAME: process.env.DATABASE_DBNAME,
       DATABASE_PORT: process.env.DATABASE_PORT,
+      CATALOG_ITEMS_TOPIC_ARN: 'createProductTopic',
     },
   },
   // import the function via paths
