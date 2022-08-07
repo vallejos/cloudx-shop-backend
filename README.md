@@ -9,6 +9,11 @@ Task 6.2
 - Updated importFileParser lambda function.
 - Removed log entries from readable stream.
 
+Task 6.3
+- Created createProductTopic SNS topic.
+- Created email subscription.
+- Updated catalogBatchProcess to send event.
+
 # Task 5
 
 Task 5.1

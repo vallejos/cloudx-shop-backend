@@ -5,7 +5,7 @@ import createProduct from '@functions/createProduct';
 import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
-  service: 'shop-service',
+  service: 'product-service',
   frameworkVersion: '3',
   plugins: ['serverless-esbuild'],
   provider: {
@@ -41,6 +41,32 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties:{
+          QueueName: 'catalogItemsQueue',                  
+        }
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties:{
+          TopicName: 'createProductTopic',
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'fabian_vallejos@epam.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          }
+        }
+      }
+    }
+  }
 };
 
 module.exports = serverlessConfiguration;
