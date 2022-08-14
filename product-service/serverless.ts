@@ -2,9 +2,10 @@ import type { AWS } from '@serverless/typescript';
 import getProductsById from '@functions/getProductsById';
 import getProductsList from '@functions/getProductsList';
 import createProduct from '@functions/createProduct';
+import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
-  service: 'shop-service',
+  service: 'product-service',
   frameworkVersion: '3',
   plugins: ['serverless-esbuild'],
   provider: {
@@ -23,10 +24,11 @@ const serverlessConfiguration: AWS = {
       DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
       DATABASE_DBNAME: process.env.DATABASE_DBNAME,
       DATABASE_PORT: process.env.DATABASE_PORT,
+      CATALOG_ITEMS_TOPIC_ARN: 'createProductTopic',
     },
   },
   // import the function via paths
-  functions: { getProductsById, getProductsList, createProduct },
+  functions: { getProductsById, getProductsList, createProduct, catalogBatchProcess },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -40,6 +42,32 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties:{
+          QueueName: 'catalogItemsQueue',                  
+        }
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties:{
+          TopicName: 'createProductTopic',
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'fabian_vallejos@epam.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          }
+        }
+      }
+    }
+  }
 };
 
 module.exports = serverlessConfiguration;

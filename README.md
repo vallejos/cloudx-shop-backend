@@ -1,3 +1,19 @@
+# Task 6
+
+Task 6.1
+- Created catalogBatchProcess lambda function to create products using the createProduct lambda function.
+- Created catalogItemsQueue SQS queue.
+- Configured batchSize for lambda trigger.
+
+Task 6.2
+- Updated importFileParser lambda function.
+- Removed log entries from readable stream.
+
+Task 6.3
+- Created createProductTopic SNS topic.
+- Created email subscription.
+- Updated catalogBatchProcess to send event.
+
 # Task 5
 
 Task 5.1
