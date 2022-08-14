@@ -1,3 +1,15 @@
+# Task 7
+
+Task 7.1
+1. Created authorization-service
+2. Created basicAuthorizer lambda function
+3. Added env variable with test password. Added decoding of token and verification against local .env credentials.
+4. Added error handling
+
+Task 7.2
+1. Added lambda authorization to `/import` import service endpoint.
+2. Used `basicAuthorizer` as lambda authorizer.
+
 # Task 6
 
 Task 6.1

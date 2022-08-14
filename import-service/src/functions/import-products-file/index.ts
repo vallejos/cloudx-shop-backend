@@ -13,6 +13,14 @@ export default {
             'application/json': schema,
           },
         },
+        authorizer: {
+          name: 'basicAuthorizer',
+          arn: {
+            'Fn::GetAtt': [ 'BasicAuthorizerLambdaFunction', 'Arn' ],
+          },
+          identitySource: 'method.request.header.Authorization',
+          type: 'request',
+        },
       },
     },
   ],
