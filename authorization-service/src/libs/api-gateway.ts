@@ -1,28 +1,16 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyResult, Handler } from "aws-lambda"
+import type { APIGatewayAuthorizerResult, APIGatewayProxyEvent, APIGatewayProxyResult, Handler, PolicyDocument } from "aws-lambda"
 import type { FromSchema } from "json-schema-to-ts";
-import { AuthenticationError, AccessDeniedError } from "../errors";
+import { AuthenticationError, AccessDeniedError, MissingParametersError } from "../errors";
 
 type ValidatedAPIGatewayProxyEvent<S> = Omit<APIGatewayProxyEvent, 'body'> & { body: FromSchema<S> }
 export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<ValidatedAPIGatewayProxyEvent<S>, APIGatewayProxyResult>
 
-export const formatJSONResponse = (response: Record<string, unknown>) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(response)
+const getStatusCode = (error?: Error): number => {
+  if (!error) {
+    return 200
   }
-}
 
-export const formatErrorResponse = (error: Error) => {
-  return {
-    statusCode: getStatusCode(error),
-    body: JSON.stringify({
-      error: error.message
-    })
-  }
-}
-
-const getStatusCode = (error: Error): number => {
-  if (error instanceof AuthenticationError) {
+  if (error instanceof MissingParametersError) {
     return 401
   }
 
@@ -31,4 +19,23 @@ const getStatusCode = (error: Error): number => {
   }
 
   return 500
+}
+
+export const formatPolicyResponse = (methodArn: string, principalId: string, effect: string, error?: Error) => {
+  const policy = {
+    principalId,
+    policyDocument: {
+      Version: '2012-10-17',
+      Statement: {
+        Action: 'execute-api:Invoke',
+        Effect: effect,
+        Resource: methodArn,
+      },
+    },
+    context: {
+      statusCode: getStatusCode(error)
+    },
+  }
+  console.log('policy', policy)
+  return policy
 }

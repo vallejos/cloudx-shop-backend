@@ -47,6 +47,6 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
-};
+}
 
 module.exports = serverlessConfiguration;

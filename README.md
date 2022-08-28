@@ -3,7 +3,7 @@
 Task 7.1
 1. Created authorization-service
 2. Created basicAuthorizer lambda function
-3. Added env variable with test password. Added decoding of token and verification against local .env credentials.
+3. Added env variable with test password. Added decoding of token and verification against local .env credentials. Added .env to .gitignore file.
 4. Added error handling
 
 Task 7.2
