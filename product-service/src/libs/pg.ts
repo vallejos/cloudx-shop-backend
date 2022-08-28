@@ -8,7 +8,7 @@ export const dbQuery = async (query: string, params: any[] = []) => {
       user: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_DBNAME,
-      port: 5432,
+      port: +process.env.DATABASE_PORT,
       ssl: { rejectUnauthorized: false },
     })
 

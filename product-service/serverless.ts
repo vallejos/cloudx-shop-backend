@@ -7,7 +7,7 @@ import catalogBatchProcess from '@functions/catalogBatchProcess';
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
     region: "us-east-1",
@@ -24,7 +24,7 @@ const serverlessConfiguration: AWS = {
       DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
       DATABASE_DBNAME: process.env.DATABASE_DBNAME,
       DATABASE_PORT: process.env.DATABASE_PORT,
-      CATALOG_ITEMS_TOPIC_ARN: 'createProductTopic',
+      CATALOG_ITEMS_TOPIC_ARN: process.env.CATALOG_ITEMS_TOPIC_ARN,
     },
   },
   // import the function via paths
