@@ -25,7 +25,31 @@ const serverlessConfiguration: AWS = {
       DATABASE_DBNAME: process.env.DATABASE_DBNAME,
       DATABASE_PORT: process.env.DATABASE_PORT,
       CATALOG_ITEMS_TOPIC_ARN: process.env.CATALOG_ITEMS_TOPIC_ARN,
+      SUBSCRIPTION_EMAIL: process.env.SUBSCRIPTION_EMAIL,
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: [
+          {
+            'Fn::GetAtt': [
+              'SQSQueue',
+              'Arn',
+            ],
+          },
+        ],
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: [
+          {
+            Ref: 'SNSTopic',
+          },
+        ],
+      },
+    ],
   },
   // import the function via paths
   functions: { getProductsById, getProductsList, createProduct, catalogBatchProcess },
@@ -47,7 +71,7 @@ const serverlessConfiguration: AWS = {
       SQSQueue: {
         Type: 'AWS::SQS::Queue',
         Properties:{
-          QueueName: 'catalogItemsQueue',                  
+          QueueName: 'catalogItemsQueue',
         }
       },
       SNSTopic: {
@@ -65,7 +89,7 @@ const serverlessConfiguration: AWS = {
             Ref: 'SNSTopic',
           }
         }
-      }
+      },
     }
   }
 };

@@ -8,6 +8,7 @@ export const importProduct = async (name: string, price: number, description?: s
             description,
             count,
         });
+        console.log('Sending message', messageBody);
         return sendToSQS(messageBody);
     } catch (error) {
         throw new Error(error.message)

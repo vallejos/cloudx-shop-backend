@@ -21,21 +21,21 @@ const getStatusCode = (error?: Error): number => {
   return 500
 }
 
-export const formatPolicyResponse = (methodArn: string, principalId: string, effect: string, error?: Error) => {
+export const formatPolicyResponse = (resource: string, principalId: string, effect: string, error?: Error) => {
   const policy = {
     principalId,
     policyDocument: {
       Version: '2012-10-17',
-      Statement: {
+      Statement: [{
         Action: 'execute-api:Invoke',
         Effect: effect,
-        Resource: methodArn,
-      },
+        Resource: [resource],
+      }],
     },
     context: {
       statusCode: getStatusCode(error)
     },
   }
-  console.log('policy', policy)
+  console.log('policy', JSON.stringify(policy))
   return policy
 }

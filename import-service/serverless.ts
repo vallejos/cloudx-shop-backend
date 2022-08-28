@@ -5,7 +5,7 @@ import importFileParser from '@functions/import-file-parser';
 const serverlessConfiguration: AWS = {
   service: 'import-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
     region: 'us-east-1',
@@ -23,12 +23,17 @@ const serverlessConfiguration: AWS = {
       {
         Effect: 'Allow',
         Action: 's3:ListBucket',
-        Resource: 'arn:aws:s3:::cloudx-task5-import-service-data',
+        Resource: ['arn:aws:s3:::cloudx-task5-import-service-data'],
       },
       {
         Effect: 'Allow',
         Action: 's3:*',
-        Resource: 'arn:aws:s3:::cloudx-task5-import-service-data/*',
+        Resource: ['arn:aws:s3:::cloudx-task5-import-service-data/*'],
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: ['arn:aws:sqs:us-east-1:988074418972:catalogItemsQueue'],
       },
     ],
   },
@@ -45,6 +50,21 @@ const serverlessConfiguration: AWS = {
       define: { 'require.resolve': undefined },
       platform: 'node',
       concurrency: 10,
+    },
+  },
+  resources: {
+    Resources: {
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: { Ref: 'ApiGatewayRestApi' },
+        },
+      },
     },
   },
 }

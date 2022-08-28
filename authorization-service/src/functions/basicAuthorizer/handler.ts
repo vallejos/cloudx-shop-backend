@@ -7,13 +7,12 @@ const basicAuthorizer = async (event: APIGatewayTokenAuthorizerEvent) => {
   console.log(`basicAuthorizer event`, event)
 
   const APIGATEWAY_AUTHORIZER_TYPE = 'TOKEN'
-
   const { type, methodArn, authorizationToken } = event
   const token = authorizationToken?.replace('Basic ', '')
 
   try {
     if (type !== APIGATEWAY_AUTHORIZER_TYPE) {
-      console.log('Invalid type')
+      console.log('Invalid type', type)
       throw new MissingParametersError('Invalid authorization type.')
     }
 
