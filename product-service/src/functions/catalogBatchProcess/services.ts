@@ -10,13 +10,14 @@ export const createProduct = async (name: string, price: number, description?: s
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      name,
+      title: name,
       description,
       price,
-      count,
+      count: count || 0,
     }),
   }
   try {
+    console.log('options', options)
     const response = await fetch(url, options);
     const json = await response.json();
     return json;
