@@ -8,10 +8,16 @@ export default {
       http: {
         method: 'get',
         path: 'import',
+        cors: true,
         request: {
           schemas: {
             'application/json': schema,
           },
+        },
+        authorizer: {
+          arn: 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:authorization-service-dev-basicAuthorizer',
+          type: 'token',
+          resultTtlInSeconds: 0,
         },
       },
     },
