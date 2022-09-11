@@ -1,4 +1,4 @@
-import { formatJSONResponse } from '@libs/api-gateway';
+import { formatJSONResponse, formatErrorResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import { CopyObjectCommand, DeleteObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import csv from 'csv-parser';
@@ -8,7 +8,7 @@ const BUCKET = 'cloudx-task5-import-service-data';
 
 const importFileParser = async (event: any) => {
   let statusCode = 202;
-  console.log('[importFileParser] Starting...', { event });
+  console.log('[importFileParser] Starting...', JSON.stringify(event))
 
   try {
     const s3 = new S3Client({ region: 'us-east-1' });
@@ -22,16 +22,18 @@ const importFileParser = async (event: any) => {
       const s3Data = await s3.send(getObjCmd);
 
       await processS3Data(s3, s3Data.Body, record.s3.object.key);
+
+      console.log('All Done!');
+
+      return formatJSONResponse({
+        message: 'All Done',
+      });    
     }
   } catch (error) {
     console.error(error);
     statusCode = error.statusCode || 500;
+    return formatErrorResponse(error);
   }
-
-  console.log('All Done!');
-  return formatJSONResponse({
-    statusCode,
-  });
 }
 
 const processS3Data = (s3, s3Data, objKey) => {
@@ -45,6 +47,7 @@ const processS3Data = (s3, s3Data, objKey) => {
         })
         .on('data', (row) => {
           const { name, price, description, count } = row;
+          console.log('Sending data to SQS', JSON.stringify(row))
           services.importProduct(name, price, description, count);
         })
         .on('end', async () => {
@@ -56,7 +59,7 @@ const processS3Data = (s3, s3Data, objKey) => {
           });
           await s3.send(copyObjCmd);
 
-          console.log(`Copied: ${objKey}`);    
+          console.log(`Copied: ${objKey}`)
           console.log('Deleting...')
 
           const delObjCmd = new DeleteObjectCommand({

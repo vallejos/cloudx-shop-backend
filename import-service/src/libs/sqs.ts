@@ -9,8 +9,10 @@ export const sendToSQS = async (messageBody) => {
         MessageBody: messageBody,
     });
     const sendMessageResult = await sqs.send(sendMessageCmd);
+    console.log('sendMessageResult', JSON.stringify(sendMessageResult))
     return sendMessageResult;
   } catch (error) {
+    console.error(error);
     throw new SQSError(error.message)
   }
 }

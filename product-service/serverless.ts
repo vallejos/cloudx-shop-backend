@@ -7,7 +7,7 @@ import catalogBatchProcess from '@functions/catalogBatchProcess';
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
     region: "us-east-1",
@@ -24,8 +24,32 @@ const serverlessConfiguration: AWS = {
       DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
       DATABASE_DBNAME: process.env.DATABASE_DBNAME,
       DATABASE_PORT: process.env.DATABASE_PORT,
-      CATALOG_ITEMS_TOPIC_ARN: 'createProductTopic',
+      CATALOG_ITEMS_TOPIC_ARN: process.env.CATALOG_ITEMS_TOPIC_ARN,
+      SUBSCRIPTION_EMAIL: process.env.SUBSCRIPTION_EMAIL,
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: [
+          {
+            'Fn::GetAtt': [
+              'SQSQueue',
+              'Arn',
+            ],
+          },
+        ],
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: [
+          {
+            Ref: 'SNSTopic',
+          },
+        ],
+      },
+    ],
   },
   // import the function via paths
   functions: { getProductsById, getProductsList, createProduct, catalogBatchProcess },
@@ -47,7 +71,7 @@ const serverlessConfiguration: AWS = {
       SQSQueue: {
         Type: 'AWS::SQS::Queue',
         Properties:{
-          QueueName: 'catalogItemsQueue',                  
+          QueueName: 'catalogItemsQueue',
         }
       },
       SNSTopic: {
@@ -59,10 +83,25 @@ const serverlessConfiguration: AWS = {
       SNSSubscription: {
         Type: 'AWS::SNS::Subscription',
         Properties: {
-          Endpoint: 'fabian_vallejos@epam.com',
+          Endpoint: 'fabian_vallejos+1@epam.com',
           Protocol: 'email',
           TopicArn: {
             Ref: 'SNSTopic',
+          }
+        }
+      },
+      SNSFilteredSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'fabian_vallejos+2@epam.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+          FilterPolicy: {
+            count: [
+              { numeric: [ '=', 0 ] }
+            ]
           }
         }
       }

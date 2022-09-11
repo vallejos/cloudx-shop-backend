@@ -9,6 +9,7 @@ export const sendSnsMessage = async (subject: string, message: string) => {
           Message: message,
           TopicArn: process.env.CATALOG_ITEMS_TOPIC_ARN,
         };
+        console.log('publishing', params)
         const publishCommand = new PublishCommand(params);
         return await sns.send(publishCommand);
     } catch (error) {

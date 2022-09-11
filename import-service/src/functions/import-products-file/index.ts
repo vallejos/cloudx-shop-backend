@@ -1,4 +1,3 @@
-import schema from './schema';
 import { handlerPath } from '@libs/handler-resolver';
 
 export default {
@@ -10,9 +9,11 @@ export default {
         path: 'import',
         cors: true,
         request: {
-          schemas: {
-            'application/json': schema,
-          },
+          parameters: {
+            querystrings: {
+              name: true,
+            },
+          }
         },
         authorizer: {
           arn: 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:authorization-service-dev-basicAuthorizer',
